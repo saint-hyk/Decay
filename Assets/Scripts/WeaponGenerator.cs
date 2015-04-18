@@ -9,13 +9,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class WeaponGenerator : MonoBehaviour {
+   #region properties
+
+   public Bounds SpawnBounds {
+      get { return _spawnBounds; }
+      set { _spawnBounds = value; }
+   }
+
+   #endregion properties
+
    #region fields
 
    [SerializeField]
    private GameObject _weaponPrefab;
 
-   [SerializeField]
-   private Vector3 _centrePoint;
+   private Bounds _spawnBounds;
 
    [SerializeField]
    private int _maximumWeaponCount;
@@ -51,17 +59,23 @@ public class WeaponGenerator : MonoBehaviour {
 
    private void Update() {
       MaximizeWeapons();
-   }
 
-   private void FixedUpdate() {
       if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0)) {
          Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
          RaycastHit2D[] hitObjects = Physics2D.RaycastAll(ray.origin, ray.direction);
          if (hitObjects.Length > 0) {
-            for (int i = 0; i < hitObjects.Length; ++i) {
-               Weapon hitWeapon = _weapons.Find(weapon => weapon.transform == hitObjects[i].transform);
-               if (hitWeapon != null && hitWeapon.OnWeaponClicked()) {
-                  _weapons.Remove(hitWeapon);
+            RemoveWeapons(hitObjects);
+         }
+      }
+   }
+
+   private void RemoveWeapons(RaycastHit2D[] hitObjects) {
+      for (int i = 0; i < hitObjects.Length; ++i) {
+         List<Weapon> hitWeapons = _weapons.FindAll(weapon => weapon.transform == hitObjects[i].transform);
+         if (hitWeapons.Count > 0) {
+            foreach (Weapon w in hitWeapons) {
+               if (w.OnWeaponClicked()) {
+                  _weapons.Remove(w);
                }
             }
          }
@@ -82,15 +96,17 @@ public class WeaponGenerator : MonoBehaviour {
       float rotationAngle = Random.Range(-Mathf.PI, Mathf.PI);
       Vector3 offset = new Vector3(Mathf.Cos(rotationAngle), Mathf.Sin(rotationAngle), 0);
 
-      obj.transform.position = _centrePoint + offset * _weaponDistance;
+      obj.transform.position = _spawnBounds.center + offset * _weaponDistance;
       obj.transform.rotation = Quaternion.Euler(0, 0, rotationAngle * Mathf.Rad2Deg);
 
       Weapon weapon = obj.GetComponent<Weapon>();
       if (weapon != null) {
-         weapon.OrbitPoint = _centrePoint;
+         weapon.OrbitPoint = _spawnBounds.center;
          weapon.Speed = Random.Range(_minWeaponSpeed, _maxWeaponSpeed);
          weapon.GrowthSpeed = _weaponGrowthSpeed;
          weapon.FinalColor = _finalWeaponColor;
+         weapon.MaxSqDistance = _spawnBounds.size.x * _spawnBounds.size.x +
+                                _spawnBounds.size.y * _spawnBounds.size.y;
          _weapons.Add(weapon);
       }
    }

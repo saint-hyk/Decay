@@ -13,6 +13,7 @@ public class EnemyGenerator : MonoBehaviour {
 
    public Bounds SpawnBounds {
       get { return _spawnBounds; }
+      set { _spawnBounds = value; }
    }
 
    #endregion properties
@@ -26,13 +27,12 @@ public class EnemyGenerator : MonoBehaviour {
    private float _enemySpeed;
 
    [SerializeField]
-   private Bounds _spawnBounds;
-
-   [SerializeField]
    private float _minSpawnTime;
 
    [SerializeField]
    private float _maxSpawnTime;
+
+   private Bounds _spawnBounds;
 
    private float _currentSpawnTime;
    private float _elapsedSpawnTime = 0;

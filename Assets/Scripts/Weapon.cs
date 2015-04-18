@@ -45,6 +45,11 @@ public class Weapon : MonoBehaviour {
       set { _growthSpeed = value; }
    }
 
+   public float MaxSqDistance {
+      get { return _maxSqDistance; }
+      set { _maxSqDistance = value; }
+   }
+
    #endregion properties
 
    #region fields
@@ -54,6 +59,7 @@ public class Weapon : MonoBehaviour {
    private Vector3 _orbitPoint;
    private float _speed;
    private float _growthSpeed;
+   private float _maxSqDistance;
    private Vector3 _offcastDirection;
 
    #endregion fields
@@ -78,7 +84,12 @@ public class Weapon : MonoBehaviour {
             break;
 
          case State.Flying:
-            transform.Translate(_offcastDirection * _speed / 2.0f);
+            transform.Translate(_offcastDirection * _speed / 4.0f);
+
+            if ((transform.position - _orbitPoint).magnitude > _maxSqDistance) {
+               Destroy(gameObject);
+            }
+
             break;
       }
    }

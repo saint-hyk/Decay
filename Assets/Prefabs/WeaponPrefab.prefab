@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 404198}
   - 212: {fileID: 21211476}
   - 114: {fileID: 11410878}
-  - 61: {fileID: 6126672}
+  - 58: {fileID: 5889190}
   - 50: {fileID: 5050334}
   m_Layer: 0
   m_Name: WeaponPrefab
@@ -46,8 +46,8 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!61 &6126672
-BoxCollider2D:
+--- !u!58 &5889190
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -58,7 +58,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 2.55999994, y: 2.55999994}
+  m_Radius: 1.27999997
 --- !u!114 &11410878
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,8 +94,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 76b3cc5da8c51d142b1bf9cc9304d7a2, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: a3081811ddf51854ab9917c06590d9d8, type: 3}
+  m_Color: {r: .632352948, g: 1, b: .632352948, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
