@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------
-// Filename: Enemy.cs
+// Filename: Weapon.cs
 // Author:   Harold Absalom
 // Licence:  GNU General Public License
 // -----------------------------------------------
@@ -7,12 +7,12 @@
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class Weapon : MonoBehaviour {
    #region properties
 
-   public Vector3 Destination {
-      get { return _destination; }
-      set { _destination = value; }
+   public Vector3 OrbitPoint {
+      get { return _orbitPoint; }
+      set { _orbitPoint = value; }
    }
 
    public float Speed {
@@ -24,7 +24,8 @@ public class Enemy : MonoBehaviour {
 
    #region fields
 
-   private Vector3 _destination;
+   private Vector3 _orbitPoint;
+
    private float _speed;
 
    #endregion fields
@@ -37,8 +38,7 @@ public class Enemy : MonoBehaviour {
    }
 
    private void Update() {
-      Vector3 direction = (_destination - transform.position).normalized;
-      transform.Translate(direction * _speed);
+      transform.RotateAround(_orbitPoint, Vector3.forward, _speed);
    }
 
    #endregion unity methods

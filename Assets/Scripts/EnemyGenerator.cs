@@ -23,6 +23,9 @@ public class EnemyGenerator : MonoBehaviour {
    private GameObject _enemyPrefab;
 
    [SerializeField]
+   private float _enemySpeed;
+
+   [SerializeField]
    private Bounds _spawnBounds;
 
    [SerializeField]
@@ -70,8 +73,13 @@ public class EnemyGenerator : MonoBehaviour {
       }
 
       Vector3 spawnPos = new Vector3(xPos, yPos, 0);
-      GameObject enemy = GameObject.Instantiate(_enemyPrefab, spawnPos, Quaternion.identity) as GameObject;
-      enemy.GetComponent<Enemy>().Destination = _spawnBounds.center;
+      GameObject obj = GameObject.Instantiate(_enemyPrefab, spawnPos, Quaternion.identity) as GameObject;
+      Enemy enemy = obj.GetComponent<Enemy>();
+
+      if (enemy != null) {
+         enemy.Destination = _spawnBounds.center;
+         enemy.Speed = _enemySpeed;
+      }
    }
 
    private void SetTimerInterval() {
