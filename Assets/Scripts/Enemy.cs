@@ -38,6 +38,13 @@ public class Enemy : MonoBehaviour {
       transform.Translate(direction * _speed);
    }
 
+   private void OnTriggerEnter2D(Collider2D other) {
+      Weapon weapon = other.gameObject.GetComponent<Weapon>();
+      if (weapon != null) {
+         Destroy(gameObject);
+      }
+   }
+
    #endregion unity methods
 
    #endregion methods

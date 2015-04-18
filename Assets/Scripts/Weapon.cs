@@ -4,11 +4,31 @@
 // Licence:  GNU General Public License
 // -----------------------------------------------
 
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour {
+   #region enums
+
+   public enum State {
+      Growing,
+      Spinning,
+      Flying
+   }
+
+   #endregion enums
+
    #region properties
+
+   public State CurrentState {
+      get { return _currentState; }
+   }
+
+   public Color FinalColor {
+      get { return _finalColor; }
+      set { _finalColor = value; }
+   }
 
    public Vector3 OrbitPoint {
       get { return _orbitPoint; }
@@ -20,16 +40,20 @@ public class Weapon : MonoBehaviour {
       set { _speed = value; }
    }
 
+   public float GrowthSpeed {
+      get { return _growthSpeed; }
+      set { _growthSpeed = value; }
+   }
+
    #endregion properties
 
    #region fields
 
+   private State _currentState;
+   private Color _finalColor;
    private Vector3 _orbitPoint;
-
    private float _speed;
-
-   private bool _spinning = true;
-
+   private float _growthSpeed;
    private Vector3 _offcastDirection;
 
    #endregion fields
@@ -39,26 +63,55 @@ public class Weapon : MonoBehaviour {
    #region unity methods
 
    private void Start() {
+      _currentState = State.Growing;
+      transform.localScale = new Vector3(0, 0, 0);
    }
 
    private void Update() {
-      if (_spinning) {
-         transform.RotateAround(_orbitPoint, Vector3.forward, _speed);
-      } else {
-         transform.Translate(_offcastDirection * _speed / 2.0f);
+      switch (_currentState) {
+         case State.Growing:
+            GrowWeapon();
+            break;
+
+         case State.Spinning:
+            transform.RotateAround(_orbitPoint, Vector3.forward, _speed);
+            break;
+
+         case State.Flying:
+            transform.Translate(_offcastDirection * _speed / 2.0f);
+            break;
       }
    }
 
-   private void OnMouseDown() {
+   #endregion unity methods
+
+   public bool OnWeaponClicked() {
+      if (_currentState != State.Spinning) {
+         return false;
+      }
+
       Vector3 toCentre = (_orbitPoint - transform.position).normalized;
 
-      //transform.rotation = Quaternion.identity;
       _offcastDirection = Quaternion.Inverse(transform.rotation) * new Vector3(toCentre.y, -toCentre.x, 0);
 
-      _spinning = false;
+      _currentState = State.Flying;
+
+      return true;
    }
 
-   #endregion unity methods
+   private void GrowWeapon() {
+      if (transform.localScale.x < 1) {
+         float growth = _growthSpeed * Time.deltaTime;
+         Vector3 newScale = new Vector3(transform.localScale.x + growth,
+                                        transform.localScale.y + growth,
+                                        transform.localScale.z + growth);
+         transform.localScale = newScale;
+      } else {
+         transform.localScale = Vector3.one;
+         GetComponent<SpriteRenderer>().color = _finalColor;
+         _currentState = State.Spinning;
+      }
+   }
 
    #endregion methods
 }

@@ -6,6 +6,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WeaponGenerator : MonoBehaviour {
    #region fields
@@ -17,7 +18,10 @@ public class WeaponGenerator : MonoBehaviour {
    private Vector3 _centrePoint;
 
    [SerializeField]
-   private int _initialWeaponCount;
+   private int _maximumWeaponCount;
+
+   [SerializeField]
+   private float _weaponGrowthSpeed;
 
    [SerializeField]
    private float _minWeaponSpeed;
@@ -28,6 +32,11 @@ public class WeaponGenerator : MonoBehaviour {
    [SerializeField]
    private float _weaponDistance;
 
+   [SerializeField]
+   private Color _finalWeaponColor;
+
+   private List<Weapon> _weapons;
+
    #endregion fields
 
    #region methods
@@ -35,24 +44,56 @@ public class WeaponGenerator : MonoBehaviour {
    #region unity methods
 
    private void Start() {
-      for (int i = 0; i < _initialWeaponCount; ++i) {
-         GameObject obj = GameObject.Instantiate(_weaponPrefab) as GameObject;
+      _weapons = new List<Weapon>();
 
-         float rotationAngle = Random.Range(-Mathf.PI, Mathf.PI);
-         Vector3 offset = new Vector3(Mathf.Cos(rotationAngle), Mathf.Sin(rotationAngle), 0);
+      MaximizeWeapons();
+   }
 
-         obj.transform.position = _centrePoint + offset * _weaponDistance;
-         obj.transform.rotation = Quaternion.Euler(0, 0, rotationAngle * Mathf.Rad2Deg);
+   private void Update() {
+      MaximizeWeapons();
+   }
 
-         Weapon weapon = obj.GetComponent<Weapon>();
-         if (weapon != null) {
-            weapon.OrbitPoint = _centrePoint;
-            weapon.Speed = Random.Range(_minWeaponSpeed, _maxWeaponSpeed);
+   private void FixedUpdate() {
+      if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0)) {
+         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+         RaycastHit2D[] hitObjects = Physics2D.RaycastAll(ray.origin, ray.direction);
+         if (hitObjects.Length > 0) {
+            for (int i = 0; i < hitObjects.Length; ++i) {
+               Weapon hitWeapon = _weapons.Find(weapon => weapon.transform == hitObjects[i].transform);
+               if (hitWeapon != null && hitWeapon.OnWeaponClicked()) {
+                  _weapons.Remove(hitWeapon);
+               }
+            }
          }
       }
    }
 
    #endregion unity methods
+
+   private void MaximizeWeapons() {
+      while (_weapons.Count < _maximumWeaponCount) {
+         GenerateWeapon();
+      }
+   }
+
+   private void GenerateWeapon() {
+      GameObject obj = GameObject.Instantiate(_weaponPrefab) as GameObject;
+
+      float rotationAngle = Random.Range(-Mathf.PI, Mathf.PI);
+      Vector3 offset = new Vector3(Mathf.Cos(rotationAngle), Mathf.Sin(rotationAngle), 0);
+
+      obj.transform.position = _centrePoint + offset * _weaponDistance;
+      obj.transform.rotation = Quaternion.Euler(0, 0, rotationAngle * Mathf.Rad2Deg);
+
+      Weapon weapon = obj.GetComponent<Weapon>();
+      if (weapon != null) {
+         weapon.OrbitPoint = _centrePoint;
+         weapon.Speed = Random.Range(_minWeaponSpeed, _maxWeaponSpeed);
+         weapon.GrowthSpeed = _weaponGrowthSpeed;
+         weapon.FinalColor = _finalWeaponColor;
+         _weapons.Add(weapon);
+      }
+   }
 
    #endregion methods
 }

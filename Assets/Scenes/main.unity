@@ -204,9 +204,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponPrefab: {fileID: 165062, guid: 3d92741e375a3a14bb4fcdbda63355be, type: 2}
   _centrePoint: {x: 0, y: 0, z: 0}
-  _initialWeaponCount: 3
+  _maximumWeaponCount: 3
+  _weaponGrowthSpeed: 1
   _minWeaponSpeed: 1
-  _maxWeaponSpeed: 1
+  _maxWeaponSpeed: 3
   _weaponDistance: 2.47000003
 --- !u!1 &2050932748
 GameObject:
