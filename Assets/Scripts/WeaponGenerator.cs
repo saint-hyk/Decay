@@ -38,10 +38,11 @@ public class WeaponGenerator : MonoBehaviour {
       for (int i = 0; i < _initialWeaponCount; ++i) {
          GameObject obj = GameObject.Instantiate(_weaponPrefab) as GameObject;
 
-         Vector3 offset = Random.onUnitSphere;
-         offset.z = 0;
+         float rotationAngle = Random.Range(-Mathf.PI, Mathf.PI);
+         Vector3 offset = new Vector3(Mathf.Cos(rotationAngle), Mathf.Sin(rotationAngle), 0);
 
          obj.transform.position = _centrePoint + offset * _weaponDistance;
+         obj.transform.rotation = Quaternion.Euler(0, 0, rotationAngle * Mathf.Rad2Deg);
 
          Weapon weapon = obj.GetComponent<Weapon>();
          if (weapon != null) {

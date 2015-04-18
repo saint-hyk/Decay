@@ -33,9 +33,6 @@ public class Enemy : MonoBehaviour {
 
    #region unity methods
 
-   private void Start() {
-   }
-
    private void Update() {
       Vector3 direction = (_destination - transform.position).normalized;
       transform.Translate(direction * _speed);

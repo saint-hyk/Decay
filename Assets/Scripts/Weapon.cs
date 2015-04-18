@@ -28,6 +28,10 @@ public class Weapon : MonoBehaviour {
 
    private float _speed;
 
+   private bool _spinning = true;
+
+   private Vector3 _offcastDirection;
+
    #endregion fields
 
    #region methods
@@ -38,7 +42,20 @@ public class Weapon : MonoBehaviour {
    }
 
    private void Update() {
-      transform.RotateAround(_orbitPoint, Vector3.forward, _speed);
+      if (_spinning) {
+         transform.RotateAround(_orbitPoint, Vector3.forward, _speed);
+      } else {
+         transform.Translate(_offcastDirection * _speed / 2.0f);
+      }
+   }
+
+   private void OnMouseDown() {
+      Vector3 toCentre = (_orbitPoint - transform.position).normalized;
+
+      //transform.rotation = Quaternion.identity;
+      _offcastDirection = Quaternion.Inverse(transform.rotation) * new Vector3(toCentre.y, -toCentre.x, 0);
+
+      _spinning = false;
    }
 
    #endregion unity methods
