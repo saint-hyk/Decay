@@ -360,6 +360,7 @@ MonoBehaviour:
     m_Extent: {x: 10, y: 10, z: 0}
   _scoreDisplay: {fileID: 665072849}
   _highScoreDisplay: {fileID: 147163485}
+  _themeMusic: {fileID: 1530259285}
   _loseSound: {fileID: 8300000, guid: 61045766568c97943b259715a43f387f, type: 3}
   _winSound: {fileID: 8300000, guid: 7d63ff9d660933b4d8c8567cee23c562, type: 3}
 --- !u!1 &246880575
@@ -1127,7 +1128,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1428207470
 RectTransform:
   m_ObjectHideFlags: 0

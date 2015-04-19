@@ -22,6 +22,9 @@ public class EnvironmentalSettings : MonoBehaviour {
    private Text _highScoreDisplay;
 
    [SerializeField]
+   private AudioSource _themeMusic;
+
+   [SerializeField]
    private AudioClip _loseSound;
 
    [SerializeField]
