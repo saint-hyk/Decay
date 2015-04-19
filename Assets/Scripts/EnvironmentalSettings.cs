@@ -78,6 +78,13 @@ public class EnvironmentalSettings : MonoBehaviour {
       _weaponGenerator.Paused = false;
    }
 
+   public void SetAudioMute(bool mute) {
+      AudioSource[] sources = GameObject.FindObjectsOfType<AudioSource>();
+      foreach (AudioSource s in sources) {
+         s.mute = mute;
+      }
+   }
+
    private void OnEnemyDestroyed(object sender, EventArgs e) {
       ++_score;
       _scoreDisplay.text = _score.ToString();

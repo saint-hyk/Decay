@@ -61,8 +61,6 @@ public class WeaponGenerator : MonoBehaviour {
 
    private AudioSource _weaponSoundSource;
 
-   private bool _checkWeaponClicks = false;
-
    #endregion fields
 
    #region methods
@@ -85,14 +83,6 @@ public class WeaponGenerator : MonoBehaviour {
       MaximizeWeapons();
 
       if (Input.GetMouseButtonDown(0)) {
-         _checkWeaponClicks = true;
-      } else if (Input.GetMouseButtonUp(0)) {
-         _checkWeaponClicks = false;
-      }
-   }
-
-   private void FixedUpdate() {
-      if (_checkWeaponClicks) {
          Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
          RaycastHit2D[] hitObjects = Physics2D.RaycastAll(ray.origin, ray.direction);
          if (hitObjects.Length > 0) {

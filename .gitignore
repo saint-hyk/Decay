@@ -45,7 +45,10 @@ Temporary Items
 # Unnecessary Unity Files
 Library
 obj
+bin
 Temp
 *.sln
 *.suo
 *.csproj
+
+Promotional
