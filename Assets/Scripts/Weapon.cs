@@ -50,6 +50,11 @@ public class Weapon : MonoBehaviour {
       set { _maxSqDistance = value; }
    }
 
+   public bool Paused {
+      get { return _paused; }
+      set { _paused = value; }
+   }
+
    #endregion properties
 
    #region fields
@@ -61,6 +66,7 @@ public class Weapon : MonoBehaviour {
    private float _growthSpeed;
    private float _maxSqDistance;
    private Vector3 _offcastDirection;
+   private bool _paused;
 
    #endregion fields
 
@@ -74,17 +80,20 @@ public class Weapon : MonoBehaviour {
    }
 
    private void Update() {
+      if (_paused)
+         return;
+
       switch (_currentState) {
          case State.Growing:
             GrowWeapon();
             break;
 
          case State.Spinning:
-            transform.RotateAround(_orbitPoint, Vector3.forward, _speed);
+            transform.RotateAround(_orbitPoint, Vector3.forward, _speed * Time.deltaTime);
             break;
 
          case State.Flying:
-            transform.Translate(_offcastDirection * _speed / 4.0f);
+            transform.Translate(_offcastDirection * _speed / 4.0f * Time.deltaTime);
 
             if ((transform.position - _orbitPoint).magnitude > _maxSqDistance) {
                Destroy(gameObject);

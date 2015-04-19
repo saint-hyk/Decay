@@ -16,6 +16,16 @@ public class WeaponGenerator : MonoBehaviour {
       set { _spawnBounds = value; }
    }
 
+   public bool Paused {
+      get { return _paused; }
+      set {
+         _paused = value;
+         if (_paused) {
+            PauseWeapons();
+         }
+      }
+   }
+
    #endregion properties
 
    #region fields
@@ -44,6 +54,9 @@ public class WeaponGenerator : MonoBehaviour {
    private Color _finalWeaponColor;
 
    private List<Weapon> _weapons;
+   private bool _paused = false;
+
+   private bool _checkWeaponClicks = false;
 
    #endregion fields
 
@@ -58,15 +71,37 @@ public class WeaponGenerator : MonoBehaviour {
    }
 
    private void Update() {
+      if (_paused)
+         return;
+
       MaximizeWeapons();
 
-      if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonUp(0)) {
+      if (Input.GetMouseButtonDown(0)) {
+         _checkWeaponClicks = true;
+      } else if (Input.GetMouseButtonUp(0)) {
+         _checkWeaponClicks = false;
+      }
+   }
+
+   private void FixedUpdate() {
+      if (_checkWeaponClicks) {
          Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
          RaycastHit2D[] hitObjects = Physics2D.RaycastAll(ray.origin, ray.direction);
          if (hitObjects.Length > 0) {
             RemoveWeapons(hitObjects);
          }
       }
+   }
+
+   #endregion unity methods
+
+   public void Reset() {
+      foreach (Weapon w in _weapons) {
+         Destroy(w.gameObject);
+      }
+      _weapons.Clear();
+
+      MaximizeWeapons();
    }
 
    private void RemoveWeapons(RaycastHit2D[] hitObjects) {
@@ -81,8 +116,6 @@ public class WeaponGenerator : MonoBehaviour {
          }
       }
    }
-
-   #endregion unity methods
 
    private void MaximizeWeapons() {
       while (_weapons.Count < _maximumWeaponCount) {
@@ -108,6 +141,12 @@ public class WeaponGenerator : MonoBehaviour {
          weapon.MaxSqDistance = _spawnBounds.size.x * _spawnBounds.size.x +
                                 _spawnBounds.size.y * _spawnBounds.size.y;
          _weapons.Add(weapon);
+      }
+   }
+
+   private void PauseWeapons() {
+      foreach (Weapon w in _weapons) {
+         w.Paused = true;
       }
    }
 

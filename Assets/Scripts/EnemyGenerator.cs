@@ -7,13 +7,35 @@
 using System.Collections;
 using System.Timers;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyGenerator : MonoBehaviour {
+   #region events
+
+   public event System.EventHandler EnemyDestroyed;
+
+   public event System.EventHandler CentreReached;
+
+   #endregion events
+
    #region properties
 
    public Bounds SpawnBounds {
       get { return _spawnBounds; }
       set { _spawnBounds = value; }
+   }
+
+   public bool Paused {
+      get {
+         return _paused;
+      }
+
+      set {
+         _paused = value;
+         if (_paused) {
+            PauseAllEnemies();
+         }
+      }
    }
 
    #endregion properties
@@ -36,6 +58,7 @@ public class EnemyGenerator : MonoBehaviour {
 
    private float _currentSpawnTime;
    private float _elapsedSpawnTime = 0;
+   private bool _paused = true;
 
    #endregion fields
 
@@ -48,6 +71,9 @@ public class EnemyGenerator : MonoBehaviour {
    }
 
    private void Update() {
+      if (_paused)
+         return;
+
       _elapsedSpawnTime += Time.deltaTime;
 
       if (_elapsedSpawnTime >= _currentSpawnTime) {
@@ -55,6 +81,16 @@ public class EnemyGenerator : MonoBehaviour {
          _elapsedSpawnTime = 0;
          SetTimerInterval();
       }
+   }
+
+   #endregion unity methods
+
+   public void Reset() {
+      GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+      foreach (GameObject go in enemies) {
+         Destroy(go);
+      }
+      _elapsedSpawnTime = 0.0f;
    }
 
    private void SpawnEnemy() {
@@ -79,6 +115,8 @@ public class EnemyGenerator : MonoBehaviour {
       if (enemy != null) {
          enemy.Destination = _spawnBounds.center;
          enemy.Speed = _enemySpeed;
+         enemy.EnemyDestroyed += OnEnemyDestroyed;
+         enemy.CentreReached += OnCentreReached;
       }
    }
 
@@ -86,7 +124,27 @@ public class EnemyGenerator : MonoBehaviour {
       _currentSpawnTime = Random.Range(_minSpawnTime, _maxSpawnTime);
    }
 
-   #endregion unity methods
+   private void PauseAllEnemies() {
+      GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+      foreach (GameObject go in enemies) {
+         Enemy e = go.GetComponent<Enemy>();
+         if (e != null) {
+            e.Paused = true;
+         }
+      }
+   }
+
+   private void OnEnemyDestroyed(object sender, System.EventArgs e) {
+      if (EnemyDestroyed != null) {
+         EnemyDestroyed(sender, e);
+      }
+   }
+
+   private void OnCentreReached(object sender, System.EventArgs e) {
+      if (CentreReached != null) {
+         CentreReached(sender, e);
+      }
+   }
 
    #endregion methods
 }
