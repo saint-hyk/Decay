@@ -54,6 +54,11 @@ public class EnemyGenerator : MonoBehaviour {
    [SerializeField]
    private float _maxSpawnTime;
 
+   [SerializeField]
+   private AudioClip _enemyDestroyedSound;
+
+   private AudioSource _enemyDestroyedSoundSource;
+
    private Bounds _spawnBounds;
 
    private float _currentSpawnTime;
@@ -68,6 +73,9 @@ public class EnemyGenerator : MonoBehaviour {
 
    private void Start() {
       SetTimerInterval();
+
+      _enemyDestroyedSoundSource = gameObject.AddComponent<AudioSource>();
+      _enemyDestroyedSoundSource.clip = _enemyDestroyedSound;
    }
 
    private void Update() {
@@ -138,6 +146,7 @@ public class EnemyGenerator : MonoBehaviour {
       if (EnemyDestroyed != null) {
          EnemyDestroyed(sender, e);
       }
+      _enemyDestroyedSoundSource.Play();
    }
 
    private void OnCentreReached(object sender, System.EventArgs e) {

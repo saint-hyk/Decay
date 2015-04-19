@@ -53,8 +53,13 @@ public class WeaponGenerator : MonoBehaviour {
    [SerializeField]
    private Color _finalWeaponColor;
 
+   [SerializeField]
+   private AudioClip _weaponSound;
+
    private List<Weapon> _weapons;
    private bool _paused = false;
+
+   private AudioSource _weaponSoundSource;
 
    private bool _checkWeaponClicks = false;
 
@@ -68,6 +73,9 @@ public class WeaponGenerator : MonoBehaviour {
       _weapons = new List<Weapon>();
 
       MaximizeWeapons();
+
+      _weaponSoundSource = gameObject.AddComponent<AudioSource>();
+      _weaponSoundSource.clip = _weaponSound;
    }
 
    private void Update() {
@@ -110,6 +118,7 @@ public class WeaponGenerator : MonoBehaviour {
          if (hitWeapons.Count > 0) {
             foreach (Weapon w in hitWeapons) {
                if (w.OnWeaponClicked()) {
+                  _weaponSoundSource.Play();
                   _weapons.Remove(w);
                }
             }

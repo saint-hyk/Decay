@@ -21,6 +21,14 @@ public class EnvironmentalSettings : MonoBehaviour {
    [SerializeField]
    private Text _highScoreDisplay;
 
+   [SerializeField]
+   private AudioClip _loseSound;
+
+   [SerializeField]
+   private AudioClip _winSound;
+
+   private AudioSource _soundSource;
+
    private EnemyGenerator _enemyGenerator;
    private WeaponGenerator _weaponGenerator;
 
@@ -52,10 +60,13 @@ public class EnvironmentalSettings : MonoBehaviour {
       _weaponGenerator.SpawnBounds = _spawnBounds;
    }
 
+   private void Start() {
+      _soundSource = gameObject.AddComponent<AudioSource>();
+   }
+
    #endregion unity methods
 
    public void Restart() {
-      UpdateHighScore();
       _score = 0;
       _scoreDisplay.text = _score.ToString();
 
@@ -82,7 +93,11 @@ public class EnvironmentalSettings : MonoBehaviour {
       if (_score > _highScore) {
          _highScore = _score;
          _highScoreDisplay.text = _highScore.ToString();
+         _soundSource.clip = _winSound;
+      } else {
+         _soundSource.clip = _loseSound;
       }
+      _soundSource.Play();
    }
 
    #endregion methods
