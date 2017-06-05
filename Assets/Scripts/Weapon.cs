@@ -95,7 +95,7 @@ public class Weapon : MonoBehaviour {
          case State.Flying:
             transform.Translate(_offcastDirection * _speed / 4.0f * Time.deltaTime);
 
-            if ((transform.position - _orbitPoint).magnitude > _maxSqDistance) {
+            if ((transform.position - _orbitPoint).sqrMagnitude > _maxSqDistance) {
                Destroy(gameObject);
             }
 
